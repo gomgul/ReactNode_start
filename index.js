@@ -2,6 +2,8 @@ var express = require('express');
 var app = express();
 var PORT = 5000;
 const bodyParser = require('body-parser');
+
+const config = require('./config/key');
 const { User } = require("./models/User");
 
 
@@ -11,7 +13,7 @@ app.use(bodyParser.json());
 
 const mongoose = require('mongoose');
 mongoose
-  .connect('mongodb+srv://root:1234@cluster0.bd69w.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+  .connect(config.mongoURI)
   .then(() => console.log("DB Connection Successfull!"))
   .catch((err) => {
     console.log(err);
@@ -27,6 +29,7 @@ app.get('/', function(req, res) {
 
 app.post('/register', ( req, res ) => {
     const user = new User(req.body);
+    console.log(req.body);
     user.save((err, userInfo) => {
         if(err) return res.json({ success : false, err })
         return res.status(200).json({
